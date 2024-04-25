@@ -132,12 +132,23 @@ inline void quickSort(Iterator begin, Iterator end, FuncPtr func = nullptr)
 template <class Iterator, class FuncPtr = nullptr_t>
 inline void selectionSort(Iterator begin, Iterator end, FuncPtr func = nullptr)
 {
+
     for (Iterator i = begin; i < end; i++)
     {
         Iterator mnIdx = i;
         for (Iterator j = i + 1; j < end; j++)
-            if (*j < *i)
-                mnIdx = j;
-        swap(*i, *mnIdx);
+            {
+                if constexpr (!is_same_v<FuncPtr, nullptr_t>){
+                    if(func(*j, *mnIdx))
+                        mnIdx = j;
+                }
+                else
+                {
+                    if (*j < *mnIdx)
+                        mnIdx = j;
+                }
+                
+            }
+            swap(*i, *mnIdx);
     }
 }
